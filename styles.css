@@ -862,31 +862,48 @@ section.about-hero {
         max-width: 520px;
     }
 }
-/* Mobile Responsive Stack Layout */
-@media (max-width: 600px) {
+/* Mobile Header Styles */
+@media screen and (max-width: 768px) {
     header {
-        padding: 12px 20px;
-        flex-direction: column;   /* Stack logo on top, navigation below */
-        align-items: flex-start;  /* Align everything neatly to the left */
-        gap: 10px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 15px 10px;
+        gap: 12px;
     }
 
-    header h1 {
-        font-size: 2rem;
-        margin-left: 0;
+    header .logo {
+        text-align: center;
+        margin: 0;
     }
 
-    .nav-links {
+    header nav, 
+    header .nav-links {
         width: 100%;
         display: flex;
-        flex-wrap: wrap;          /* Allows links to break smoothly into two rows */
+        justify-content: center;
         align-items: center;
-        gap: 12px 18px;           /* Vertical gap between rows & horizontal gap between items */
-        margin-left: 0;
     }
 
-    header nav a {
-        font-size: 0.95rem;
+    header nav ul, 
+    header .nav-links {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 18px; /* Adjust spacing between nav items */
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    header nav ul li {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    #cart-toggle-btn {
+        margin-left: 0;
     }
 }
 }
