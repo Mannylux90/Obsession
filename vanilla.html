@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Vanilla | Obsession Perfumes</title>
+        <link rel="stylesheet" href="styles.css">
+        <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <header>
+            <div class="logo">
+                <h1><a href="index.html">Obsession</a></h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html"class="active">About</a></li>
+                    <li><a href="contacts.html">Contacts</a></li>
+                    <li>
+                    <button id="cart-toggle-btn" class="header-cart-btn" aria-label="Open Cart">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                        </svg>
+                            <span id="header-cart-count" class="cart-badge">0</span>
+                    </button>
+                    </li>
+                </ul>
+            </nav> 
+        </header>
+        <section class="features1">
+            <main class="product-page-container">
+                <div class="product-left">
+                    <div class="features1-image">
+                        <img src="images/vanilla.png" alt="Perfume Bottles">
+                        <img src="images/vanilla2.png" alt="perfume bottles">
+                    </div>
+                    <div class="features1-content">
+                        <h2><strong>Vanilla shortcake</strong></h2>
+                        <p>Vanilla Shortcake smells like a warm, freshly baked dessert straight out of a boutique bakery—rich, comforting, gourmand, and sweet without being synthetic or overly sharp.</p>
+                        <h3>Top Notes</h3>
+                        <p>Warm melted butter, heavy whipped cream, and a subtle flick of fluffy cake batter.</p>
+                        <h3>Middle Notes</h3>
+                        <p>Freshly baked sponge cake, golden biscuit crust, and a splash of pure vanilla extract.</p>
+                        <h3>Base Notes</h3>
+                        <p>Sweet Madagascar vanilla bean, warm sugar cane, and a hint of soft tonka or warm musk.</p>
+                    </div>
+                </div>
+                <!-- RIGHT COLUMN: Purchase & Review Box -->
+                <!-- RIGHT COLUMN: Purchase & Review Box -->
+                <div class="product-right">
+                
+                <!-- Purchase Box -->
+                <div class="purchase-box">
+                    <span class="price">$140.99</span>
+                    
+                    <!-- Quantity Control -->
+                    <div class="product-qty-selector">
+                    <button id="qty-minus">-</button>
+                    <input type="number" id="product-qty" value="1" min="1" readonly>
+                    <button id="qty-plus">+</button>
+                    </div>
+
+                    <button 
+                    class="add-to-cart-btn" 
+                    id="add-to-cart-trigger"
+                    data-id="vanilla"
+                    data-title="Vanilla Shortcake"
+                    data-price="140.99"
+                    data-img="images/vanilla.png">
+                    Add to Cart
+                    </button>
+                </div>
+
+                <!-- Customer Review Box (MUST BE INSIDE product-right) -->
+                <div class="review-section">
+                    <h3>Customer Reviews</h3>
+                    
+                    <div class="star-rating" id="star-picker">
+                    <span data-value="1">★</span>
+                    <span data-value="2">★</span>
+                    <span data-value="3">★</span>
+                    <span data-value="4">★</span>
+                    <span data-value="5">★</span>
+                    </div>
+
+                    <input type="text" id="reviewer-name" placeholder="Your Name" class="review-input">
+                    <textarea id="review-text" placeholder="Write your review here..."></textarea>
+                    <button id="submit-review-btn" class="submit-review-btn">Submit Review</button>
+
+                    <div id="reviews-display-list" class="reviews-list"></div>
+                </div>
+
+                </div> <!-- End of .product-right -->
+
+            </main> <!-- End of .product-page-container -->
+        </section>
+        <footer class="site-footer">
+            <div class="footer-content">
+            <h2 class="footer-brand">Obsession</h2>
+            <p class="footer-tagline">Curated scents tailored to your mood and desire.</p>
+
+            <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contacts.html">Contacts</a>
+            </div>
+            
+            <div class="footer-divider"></div>
+            <p class="copyright">&copy; 2026 Obsession Perfumes. All rights reserved.</p>
+        </div>
+        </footer>
+            <div id="cart-drawer" class="cart-drawer">
+                <div class="cart-header">
+                <h2>Your Shopping Cart</h2>
+                <button id="close-cart-btn">&times;</button>
+                </div>
+
+                <div class="cart-body" id="cart-items-container"></div>
+
+                <div class="cart-footer">
+                <div class="cart-total-row">
+                    <span>Total:</span>
+                    <span id="cart-total-price">$0.00</span>
+                </div>
+                <button class="checkout-btn">Checkout</button>
+                </div>
+            </div>
+
+            <div id="cart-overlay" class="cart-overlay"></div>
+        
+        
+        <script>
+        
+    // Load saved cart from LocalStorage or initialize empty array
+    let cart = JSON.parse(localStorage.getItem('obsession_cart')) || [];
+
+    // DOM Elements
+    const cartDrawer = document.getElementById('cart-drawer');
+    const cartOverlay = document.getElementById('cart-overlay');
+    const closeCartBtn = document.getElementById('close-cart-btn');
+    const itemsContainer = document.getElementById('cart-items-container');
+    const totalPriceEl = document.getElementById('cart-total-price');
+
+    // Header Cart Elements
+    const cartToggleBtn = document.getElementById('cart-toggle-btn');
+    const headerCartCount = document.getElementById('header-cart-count');
+
+    // Product Page Quantity Inputs
+    const qtyInput = document.getElementById('product-qty');
+    const qtyMinus = document.getElementById('qty-minus');
+    const qtyPlus = document.getElementById('qty-plus');
+    const addToCartBtn = document.getElementById('add-to-cart-trigger');
+
+    // Save Cart to LocalStorage
+    function saveCart() {
+        localStorage.setItem('obsession_cart', JSON.stringify(cart));
+    }
+
+    // Drawer Controls
+    function openCart() {
+        if (cartDrawer) cartDrawer.classList.add('open');
+        if (cartOverlay) cartOverlay.classList.add('active');
+    }
+
+    function closeCart() {
+        if (cartDrawer) cartDrawer.classList.remove('open');
+        if (cartOverlay) cartOverlay.classList.remove('active');
+    }
+
+    // Header Cart Toggle Listener
+    if (cartToggleBtn) {
+        cartToggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openCart();
+        });
+    }
+
+    // Product Quantity Stepper (+ / -)
+    if (qtyPlus && qtyMinus && qtyInput) {
+        qtyPlus.addEventListener('click', () => {
+            qtyInput.value = parseInt(qtyInput.value) + 1;
+        });
+        qtyMinus.addEventListener('click', () => {
+            if (parseInt(qtyInput.value) > 1) {
+                qtyInput.value = parseInt(qtyInput.value) - 1;
+            }
+        });
+    }
+
+    // Add Item to Cart
+    if (addToCartBtn) {
+        addToCartBtn.addEventListener('click', () => {
+            const id = addToCartBtn.dataset.id;
+            const title = addToCartBtn.dataset.title;
+            const price = parseFloat(addToCartBtn.dataset.price);
+            const img = addToCartBtn.dataset.img;
+            const quantity = qtyInput ? parseInt(qtyInput.value) : 1;
+
+            const existingItem = cart.find(item => item.id === id);
+
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({ id, title, price, img, quantity });
+            }
+
+            saveCart();
+            renderCart();
+            openCart();
+        });
+    }
+
+    // Update Quantity Inside Cart Drawer
+    function updateCartItemQty(id, change) {
+        const item = cart.find(i => i.id === id);
+        if (item) {
+            item.quantity += change;
+            if (item.quantity <= 0) {
+                cart = cart.filter(i => i.id !== id);
+            }
+            saveCart();
+            renderCart();
+        }
+    }
+
+    // Remove Item Entirely
+    function removeCartItem(id) {
+        cart = cart.filter(i => i.id !== id);
+        saveCart();
+        renderCart();
+    }
+
+    // Render Cart & Recalculate Grand Total & Update Badge Count
+    function renderCart() {
+        // Update Header Badge Count
+        if (headerCartCount) {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            headerCartCount.textContent = totalItems;
+        }
+
+        if (!itemsContainer || !totalPriceEl) return;
+
+        if (cart.length === 0) {
+            itemsContainer.innerHTML = '<p class="empty-msg">Your cart is currently empty.</p>';
+            totalPriceEl.textContent = '$0.00';
+            return;
+        }
+
+        itemsContainer.innerHTML = '';
+        let grandTotal = 0;
+
+        cart.forEach(item => {
+            const itemTotal = item.price * item.quantity;
+            grandTotal += itemTotal;
+
+            const row = document.createElement('div');
+            row.classList.add('cart-item');
+            row.innerHTML = `
+            <img src="${item.img}" alt="${item.title}" class="cart-item-img">
+            <div class="cart-item-details">
+                <h4>${item.title}</h4>
+                <p>$${item.price.toFixed(2)}</p>
+                <div class="drawer-qty-controls">
+                <button onclick="updateCartItemQty('${item.id}', -1)">-</button>
+                <span>${item.quantity}</span>
+                <button onclick="updateCartItemQty('${item.id}', 1)">+</button>
+                </div>
+            </div>
+            <div class="cart-item-right">
+                <span class="cart-item-total">$${itemTotal.toFixed(2)}</span>
+                <button class="remove-btn" onclick="removeCartItem('${item.id}')">&times;</button>
+            </div>
+            `;
+            itemsContainer.appendChild(row);
+        });
+
+        totalPriceEl.textContent = `$${grandTotal.toFixed(2)}`;
+    }
+
+    // Event Listeners for Drawer Close
+    if (closeCartBtn) closeCartBtn.addEventListener('click', closeCart);
+    if (cartOverlay) cartOverlay.addEventListener('click', closeCart);
+    // --- ADD CHECKOUT LISTENER HERE ---
+    const checkoutBtn = document.querySelector('.checkout-btn');
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', () => {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+
+            const grandTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            // Demo checkout alert & cart reset
+            alert(`Thank you for your order! Total: $${grandTotal.toFixed(2)}`);
+
+            cart = [];
+            saveCart();
+            renderCart();
+            closeCart();
+        });
+    }
+    // Initial Render on Page Load
+    document.addEventListener('DOMContentLoaded', renderCart);
+
+    // LocalStorage Key for Page Specific Reviews
+    const productID = 'Vanilla Shortcake';
+    let reviews = JSON.parse(localStorage.getItem(`reviews_${productID}`)) || [];
+
+    let selectedRating = 0;
+    let editingReviewId = null; 
+
+    // DOM Elements
+    const stars = document.querySelectorAll('#star-picker span');
+    const submitBtn = document.getElementById('submit-review-btn');
+    const authorInput = document.getElementById('reviewer-name');
+    const textInput = document.getElementById('review-text');
+    const reviewsContainer = document.getElementById('reviews-display-list');
+
+    // Star Selection Logic
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            selectedRating = parseInt(star.dataset.value);
+            updateStarDisplay(selectedRating);
+        });
+    });
+
+    function updateStarDisplay(rating) {
+        stars.forEach((s, idx) => {
+            if (idx < rating) {
+                s.classList.add('active');
+            } else {
+                s.classList.remove('active');
+            }
+        });
+    }
+
+    // Submit / Update Review
+    if (submitBtn) {
+        submitBtn.addEventListener('click', () => {
+            const author = authorInput.value.trim() || 'Anonymous';
+            const comment = textInput.value.trim();
+
+            if (selectedRating === 0) {
+                alert('Please select a star rating.');
+                return;
+            }
+
+            if (!comment) {
+                alert('Please enter a review message.');
+                return;
+            }
+
+            if (editingReviewId !== null) {
+                const reviewIndex = reviews.findIndex(r => r.id === editingReviewId);
+                if (reviewIndex !== -1) {
+                    reviews[reviewIndex].author = author;
+                    reviews[reviewIndex].rating = selectedRating;
+                    reviews[reviewIndex].comment = comment;
+                }
+                editingReviewId = null;
+                submitBtn.textContent = 'Submit Review';
+            } else {
+                const newReview = {
+                    id: Date.now(),
+                    author,
+                    rating: selectedRating,
+                    comment,
+                    date: new Date().toLocaleDateString()
+                };
+                reviews.unshift(newReview);
+            }
+
+            localStorage.setItem(`reviews_${productID}`, JSON.stringify(reviews));
+
+            authorInput.value = '';
+            textInput.value = '';
+            selectedRating = 0;
+            updateStarDisplay(0);
+
+            renderReviews();
+        });
+    }
+
+    // Edit Review Function
+    function editReview(id) {
+        const reviewToEdit = reviews.find(r => r.id === id);
+        if (!reviewToEdit) return;
+
+        authorInput.value = reviewToEdit.author;
+        textInput.value = reviewToEdit.comment;
+        selectedRating = reviewToEdit.rating;
+        editingReviewId = id;
+
+        updateStarDisplay(selectedRating);
+        submitBtn.textContent = 'Update Review';
+        authorInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Delete Review Function
+    function deleteReview(id) {
+        if (confirm('Are you sure you want to delete this review?')) {
+            reviews = reviews.filter(r => r.id !== id);
+            localStorage.setItem(`reviews_${productID}`, JSON.stringify(reviews));
+            
+            if (editingReviewId === id) {
+                editingReviewId = null;
+                submitBtn.textContent = 'Submit Review';
+                authorInput.value = '';
+                textInput.value = '';
+                selectedRating = 0;
+                updateStarDisplay(0);
+            }
+            
+            renderReviews();
+        }
+    }
+
+    // Render Saved Reviews
+    function renderReviews() {
+        if (!reviewsContainer) return;
+
+        if (reviews.length === 0) {
+            reviewsContainer.innerHTML = '<p style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">No reviews yet. Be the first to leave one!</p>';
+            return;
+        }
+
+        reviewsContainer.innerHTML = '';
+        reviews.forEach(review => {
+            const card = document.createElement('div');
+            card.classList.add('review-card');
+            card.innerHTML = `
+            <div class="card-header">
+                <span class="author">${review.author}</span>
+                <span class="stars">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</span>
+            </div>
+            <p>${review.comment}</p>
+            <div class="review-actions">
+                <button class="review-action-btn edit-btn" onclick="editReview(${review.id})">Edit</button>
+                <button class="review-action-btn delete-btn" onclick="deleteReview(${review.id})">Delete</button>
+            </div>
+            `;
+            reviewsContainer.appendChild(card);
+        });
+    }
+
+    // Initial render
+    document.addEventListener('DOMContentLoaded', renderReviews);
+
+        </script>
+    </body>
+</html>
