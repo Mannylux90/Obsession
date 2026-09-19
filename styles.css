@@ -45,6 +45,7 @@ header h1 a {
     color: rgb(240, 115, 115);
     text-decoration: none;
     display: flex;
+    white-space: nowrap;
     flex-wrap: wrap;
 }
 
@@ -860,6 +861,29 @@ section.about-hero {
     .contact-card {
         width: 100%; /* Expands to fill available width smoothly */
         max-width: 520px;
+    }
+}
+/* Mobile responsive scaling (Only applies to screens smaller than 600px) */
+@media (max-width: 600px) {
+    header {
+        padding: 10px 15px; /* Reduce header padding */
+    }
+
+    header h1 {
+        font-size: 1.6rem;   /* Scale down logo text to fit */
+        margin-left: 0;      /* Remove extra left offset */
+    }
+
+    li {
+        margin-right: 8px;   /* Shrink spacing between list items */
+    }
+
+    .nav-links {
+        gap: 8px;            /* Shrink gap between links */
+    }
+
+    header nav a {
+        font-size: 0.85rem;  /* Make navigation text slightly smaller */
     }
 }
 
